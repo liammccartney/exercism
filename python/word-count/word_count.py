@@ -3,7 +3,7 @@ import re
 def word_count(phrase):
     word_freq = {}
 
-    for word in re.findall(r"[\w']+", phrase):
+    for word in re.findall(r"[a-z0-9_]+", phrase.lower()):
         clean_word = sanitize_word(word)
         if word_freq.get(clean_word):
             word_freq[clean_word] += 1
