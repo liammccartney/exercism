@@ -3,8 +3,11 @@ module TwoFer exposing (twoFer)
 
 twoFer : Maybe String -> String
 twoFer name =
-    case name of
-        Nothing ->
-            "One for you, one for me."
-        Just n ->
-            "One for " ++ n ++ ", one for me."
+    let pronoun =
+            case name of
+                Nothing ->
+                    "you"
+                Just n ->
+                    n
+    in
+        "One for " ++ pronoun ++ ", one for me."
