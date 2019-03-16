@@ -5,26 +5,27 @@ import Result exposing (..)
 import String
 
 
-transform : Char -> Result Char Char
+transform : Char -> Char
 transform x =
     case x of
         'G' ->
-            Ok 'C'
+            'C'
 
         'C' ->
-            Ok 'G'
+            'G'
 
         'T' ->
-            Ok 'A'
+            'A'
 
         'A' ->
-            Ok 'U'
+            'U'
 
         _ ->
-            Err x
+            x
 
 
 toRNA : String -> Result Char String
 toRNA dna =
     dna
-        |> String.map (\n -> Result.map transform n)
+        |> String.map transform
+        |> Ok
