@@ -11,4 +11,8 @@ type alias NucleotideCounts =
 
 nucleotideCounts : String -> NucleotideCounts
 nucleotideCounts sequence =
-    Debug.todo "Please implement this function"
+    { a = String.length (String.filter (\x -> x == 'A') sequence)
+    , t = String.length (String.filter (\x -> x == 'T') sequence)
+    , c = String.length (String.filter (\x -> x == 'C') sequence)
+    , g = String.length (String.filter (\x -> x == 'G') sequence)
+    }
