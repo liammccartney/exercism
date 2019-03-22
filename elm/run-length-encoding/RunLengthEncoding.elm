@@ -5,28 +5,21 @@ import Regex exposing (Regex)
 import Tuple
 
 
-extractMatch : Regex.Match -> String
-extractMatch match =
-    if String.length match.match > 1 then
-        String.fromInt (String.length match.match) ++ Maybe.withDefault "" (Maybe.withDefault Nothing (List.head match.submatches))
-
-    else
-        Maybe.withDefault "" (Maybe.withDefault Nothing (List.head match.submatches))
-
-
-repeatedChars : Regex
-repeatedChars =
-    Maybe.withDefault Regex.never (Regex.fromString "(.)\\1*")
+encodeAux string acc =
+    case String.slice 0 1 string of
+        "" ->
+            acc
+        substr ->
+            encodeAux (String.dropLeft 1 string) (Tuple
 
 
 encode : String -> String
 encode string =
     string
-        |> Regex.find repeatedChars
-        |> List.map extractMatch
-        |> String.join ""
+        |> Debug.todo "lol"
 
 
 decode : String -> String
 decode string =
-    Debug.todo "Please implement this function"
+    string
+        |> Debug.todo "finish"

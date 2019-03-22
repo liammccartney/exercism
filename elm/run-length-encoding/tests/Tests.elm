@@ -25,20 +25,16 @@ tests =
                 \() -> Expect.equal "2a3b4c" (encode "aabbbcccc")
             ]
         , describe "run-length decode a string"
-            [ skip <|
-                test "empty string" <|
-                    \() -> Expect.equal "" (decode "")
-            , skip <|
-                test "single characters only" <|
-                    \() -> Expect.equal "XYZ" (decode "XYZ")
-            , skip <|
-                test "string with no single characters" <|
-                    \() -> Expect.equal "AABBBCCCC" (decode "2A3B4C")
-            , skip <|
-                test "single characters with repeated characters" <|
-                    \() ->
-                        Expect.equal "WWWWWWWWWWWWBWWWWWWWWWWWWBBBWWWWWWWWWWWWWWWWWWWWWWWWB"
-                            (decode "12WB12W3B24WB")
+            [ test "empty string" <|
+                \() -> Expect.equal "" (decode "")
+            , test "single characters only" <|
+                \() -> Expect.equal "XYZ" (decode "XYZ")
+            , test "string with no single characters" <|
+                \() -> Expect.equal "AABBBCCCC" (decode "2A3B4C")
+            , test "single characters with repeated characters" <|
+                \() ->
+                    Expect.equal "WWWWWWWWWWWWBWWWWWWWWWWWWBBBWWWWWWWWWWWWWWWWWWWWWWWWB"
+                        (decode "12WB12W3B24WB")
             , skip <|
                 test "multiple whitespace mixed in string" <|
                     \() -> Expect.equal "  hsqq qww  " (decode "2 hs2q q2w2 ")
