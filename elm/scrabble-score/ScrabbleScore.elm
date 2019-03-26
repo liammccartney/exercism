@@ -46,6 +46,4 @@ scoreWord x =
                 , ( 'Z', 10 )
                 ]
     in
-    x
-        |> String.toUpper
-        |> String.foldl (\c s -> s + Maybe.withDefault 0 (Dict.get c letterValues)) 0
+    String.foldl (\c s -> s + Maybe.withDefault 0 (Dict.get (Char.toUpper c) letterValues)) 0 x
