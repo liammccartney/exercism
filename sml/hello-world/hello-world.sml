@@ -1,2 +1,2 @@
 fun hello () =
-  raise Fail "'hello' is not implemented"
+  "Hello, World!"
