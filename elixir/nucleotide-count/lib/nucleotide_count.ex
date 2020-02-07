@@ -12,15 +12,9 @@ defmodule NucleotideCount do
   iex> NucleotideCount.count('AATAA', ?T)
   1
   """
-  @spec count([char], char) :: non_neg_integer
+  @spec count(charlist(), char()) :: non_neg_integer()
   def count(strand, nucleotide) do
-    Enum.reduce(strand, 0, fn (x, y) ->
-      if x == nucleotide do
-        y + 1
-      else
-        y
-      end
-    end)
+    Enum.count(strand, fn nuc -> nuc == nucleotide end)
   end
 
   @doc """
@@ -31,11 +25,8 @@ defmodule NucleotideCount do
   iex> NucleotideCount.histogram('AATAA')
   %{?A => 4, ?T => 1, ?C => 0, ?G => 0}
   """
-  @spec histogram([char]) :: map
+  @spec histogram(charlist()) :: map()
   def histogram(strand) do
-    %{?A => count(strand, ?A),
-      ?T => count(strand, ?T),
-      ?C => count(strand, ?C),
-      ?G => count(strand, ?G)}
+    Map.new(@nucleotides, fn nuc -> {nuc, count(strand, nuc)} end)
   end
 end
