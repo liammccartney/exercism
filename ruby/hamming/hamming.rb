@@ -1,8 +1,10 @@
-=begin
-Write your code for the 'Hamming' exercise in this file. Make the tests in
-`hamming_test.rb` pass.
+module Hamming
 
-To get started with TDD, see the `README.md` file in your
-`ruby/hamming` directory.
-=end
+  def self.compute(a, b)
+    if a.length != b.length
+      raise ArgumentError
+    end
 
+    (0...a.length).count {|i| a[i] != b[i]}
+  end
+end
