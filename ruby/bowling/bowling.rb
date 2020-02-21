@@ -1,46 +1,53 @@
 class Game
+  attr_reader :frames
   def initialize
-    @rolls = []
+    @frames = []
   end
 
   def roll pins
-    if @rolls.length.odd?
-      last_roll = @rolls.last || 0
-        raise BowlingError if last_roll != 10 && (pins + last_roll) > 10
+    if @frames.empty?
+      @frames << [pins]
+    elsif last_frame_incomplete?
+      if pins + last_frame.sum > 10
+        raise BowlingError
+      end
+      @frames = @frames.take(@frames.length - 1) << (last_frame << pins)
+    else
+      @frames << [pins]
     end
 
-    if pins < 0 ||
-        pins > 10
-      raise BowlingError
-    end
-    @rolls << pins
   end
 
   def score
-    calculate_score @rolls
+    sum = 0
+    @frames.each_with_index do |frame, idx|
+      prevFrame = @frames[idx - 1]
+      nextFrame = @frames[idx + 1]
+      if is_spare?(frame)
+        sum += frame.sum + nextFrame.sum
+      sum += frame.sum
+    end
+    sum
   end
 
   private
 
-  def calculate_score pins
-    return 0 if pins.empty?
+  def is_spare? frame
+    frame.length == 2 && frame.sum == 10
+  end
 
-    return pins[0] if pins.length == 1
+  def last_frame_incomplete?
+    last_frame.sum < 10 && last_frame.length < 2
+  end
 
-    if pins.length == 3
-      roll1, roll2, roll3 = pins.slice(0,3)
-      return roll1 + roll2 + roll3 + (calculate_score pins.slice(3..))
-    end
-
-    return pins.first + pins[1] + pins[2] + (calculate_score pins.slice(1..)) if (pins.first == 10)
-
-    roll1, roll2 = pins.slice(0,2)
-
-    return roll1 + roll2 + pins[2] + (calculate_score pins.slice(2..)) if roll1 + roll2 == 10
-
-    return roll1 + roll2 + (calculate_score pins.slice(2..))
+  def last_frame
+    @frames.last || []
   end
 
   class BowlingError < StandardError
   end
 end
+
+game = Game.new
+rolls = [3, 6, 3, 6, 3, 6, 3, 6, 3, 6, 3, 6, 3, 6, 3, 6, 3, 6, 3, 6]
+rolls.each { |pins| game.roll(pins) }
