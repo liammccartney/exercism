@@ -82,24 +82,12 @@ class Game
       @viable_pins_for_next_roll = (0..10 - pins)
     end
 
-    def first_roll
-      @rolls.first
-    end
-
     def score
       @rolls.sum
     end
 
     def complete?
       @rolls.length == 2 || score == 10
-    end
-
-    def is_spare?
-      score == 10 && complete?
-    end
-
-    def is_strike?
-      score == 10 && @rolls.length == 1
     end
   end
 
