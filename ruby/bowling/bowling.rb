@@ -70,16 +70,16 @@ class Game
   class Frame
     def initialize
       @rolls = []
-      @viable_pins_for_next_roll = (0..10)
+      @next_roll_limit = 10
     end
 
     def add_roll(pins)
-      unless @viable_pins_for_next_roll.include?(pins)
+      unless @next_roll_limit >= pins
         raise BowlingError, 'Roll not possible'
       end
 
       @rolls << pins
-      @viable_pins_for_next_roll = (0..10 - pins)
+      @next_roll_limit -= pins
     end
 
     def score
@@ -94,20 +94,20 @@ class Game
   class FinalFrame < Frame
     def initialize
       @rolls = []
-      @viable_pins_for_next_roll = (0..10)
+      @next_roll_limit = 10
     end
 
     def add_roll(pins)
-      unless @viable_pins_for_next_roll.include?(pins)
+      unless @next_roll_limit >= pins
         raise BowlingError, 'Roll not possible'
       end
 
       @rolls << pins
 
       if complete? || pins == 10 || @rolls.sum == 10
-        @viable_pins_for_next_roll = (0..10)
+        @next_roll_limit = 10
       else
-        @viable_pins_for_next_roll = (0..10 - pins)
+        @next_roll_limit -= pins
       end
     end
 
