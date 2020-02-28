@@ -1,33 +1,31 @@
 class Game
   def initialize
     @rolls = []
-    @last_frame = []
+    @frames = []
+    @last_frame = Frame.new
   end
 
   def roll pins
-    if !standard_rolls_complete?
-      raise BowlingError if (@last_frame + [pins]).sum > 10
-    end
-
     raise BowlingError if pins < 0 || pins > 10
 
     @rolls << pins
-    @last_frame << pins
 
-    if @last_frame.length == 2
-      @last_frame = []
+    @last_frame.add_roll(pins)
+    if @last_frame.is_complete?
+      @frames << @last_frame
+      @last_frame = Frame.new
     end
-
   end
 
   def score
+    raise BowlingError if @rolls.empty?
     calculate_score @rolls
   end
 
   private
 
   def standard_rolls_complete?
-    @rolls.length == 20
+    @frames.length == 10
   end
 
   def calculate_score pins
@@ -60,5 +58,37 @@ class Game
   end
 
   class Frame
+    def initialize
+      @rolls = []
+    end
+
+    def add_roll(roll)
+      raise BowlingError if (@rolls + [roll]).sum > 10
+      @rolls << roll
+    end
+
+    def first_roll
+      @rolls.first
+    end
+
+    def score
+      @rolls.sum
+    end
+
+    def is_complete?
+      @rolls.length == 2 || score == 10
+    end
+
+    def is_spare?
+      score == 10 && is_complete?
+    end
+
+    def is_strike?
+      score == 10 && @rolls.length == 1
+    end
+
+    def to_s
+      @rolls.to_s
+    end
   end
 end
