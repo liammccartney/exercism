@@ -1,31 +1,41 @@
 class Game
+  attr_reader :frames
+
   def initialize
     @rolls = []
     @frames = []
-    @last_frame = Frame.new
+    @prev_frame = Frame.new
   end
 
   def roll pins
-    raise BowlingError if pins < 0 || pins > 10
+    raise BowlingError, 'Cannot roll less than 0 pins' if pins < 0
+    raise BowlingError, 'Cannot roll more than 10 pins at a time' if pins > 10
+    raise BowlingError, 'Cannot roll more than 10 frames' if game_complete?
 
     @rolls << pins
 
-    @last_frame.add_roll(pins)
-    if @last_frame.is_complete?
-      @frames << @last_frame
-      @last_frame = Frame.new
+    @prev_frame.add_roll(pins)
+
+    if @prev_frame.complete?
+      @frames << @prev_frame
+      if @frames.length == 9
+        @prev_frame = FinalFrame.new
+      else
+        @prev_frame = Frame.new
+      end
     end
   end
 
   def score
-    raise BowlingError if @rolls.empty?
+    raise BowlingError, 'Cannot score an empty game' if @rolls.empty?
+    raise BowlingError, 'Cannot score an incomplete game' unless game_complete?
     calculate_score @rolls
   end
 
   private
 
-  def standard_rolls_complete?
-    @frames.length == 10
+  def game_complete?
+    @frames.length == 10 && @frames.last.complete?
   end
 
   def calculate_score pins
@@ -60,11 +70,16 @@ class Game
   class Frame
     def initialize
       @rolls = []
+      @viable_pins_for_next_roll = (0..10)
     end
 
-    def add_roll(roll)
-      raise BowlingError if (@rolls + [roll]).sum > 10
-      @rolls << roll
+    def add_roll(pins)
+      if !@viable_pins_for_next_roll.include?(pins)
+        raise BowlingError, "Not viable, #{pins} not in #{@viable_pins_for_next_roll}"
+      end
+
+      @rolls << pins
+      @viable_pins_for_next_roll = (0..10 - pins)
     end
 
     def first_roll
@@ -75,20 +90,43 @@ class Game
       @rolls.sum
     end
 
-    def is_complete?
+    def complete?
       @rolls.length == 2 || score == 10
     end
 
     def is_spare?
-      score == 10 && is_complete?
+      score == 10 && complete?
     end
 
     def is_strike?
       score == 10 && @rolls.length == 1
     end
+  end
 
-    def to_s
-      @rolls.to_s
+  class FinalFrame < Frame
+    def initialize
+      @rolls = []
+      @viable_pins_for_next_roll = (0..10)
+    end
+
+    def add_roll(pins)
+      raise BowlingError, 'Frame cannot exceed 30 pins' if (@rolls + [pins]).sum > 30
+
+      if !@viable_pins_for_next_roll.include?(pins)
+        raise BowlingError, "Not viable, #{pins} not in #{@viable_pins_for_next_roll}"
+      end
+
+      @rolls << pins
+
+      if complete? || pins == 10 || @rolls.sum == 10
+        @viable_pins_for_next_roll = (0..10)
+      else
+        @viable_pins_for_next_roll = (0..10 - pins)
+      end
+    end
+
+    def complete?
+      (@rolls.length == 2 && @rolls.sum < 10) || @rolls.length == 3
     end
   end
 end
