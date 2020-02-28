@@ -7,7 +7,7 @@ class Game
     @prev_frame = Frame.new
   end
 
-  def roll pins
+  def roll(pins)
     raise BowlingError, 'Cannot roll less than 0 pins' if pins.negative?
     raise BowlingError, 'Cannot roll more than 10 pins at a time' if pins > 10
     raise BowlingError, 'Cannot roll more than 10 frames' if game_complete?
@@ -39,7 +39,7 @@ class Game
     @frames.length == 10 && @frames.last.complete?
   end
 
-  def calculate_score pins
+  def calculate_score(pins)
     return 0 if pins.empty?
 
     return pins.first if pins.length == 1
