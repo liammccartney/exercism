@@ -23,14 +23,12 @@ class ReactTest(unittest.TestCase):
         output = ComputeCell([input_], lambda inputs: inputs[0] + 1)
         self.assertEqual(output.value, 2)
 
-    @pytest.mark.skip
     def test_compute_cells_take_inputs_in_right_order(self):
         one = InputCell(1)
         two = InputCell(2)
         output = ComputeCell([one, two], lambda inputs: inputs[0] + inputs[1] * 10)
         self.assertEqual(output.value, 21)
 
-    @pytest.mark.skip
     def test_compute_cells_update_value_when_dependencies_are_changed(self):
         input_ = InputCell(1)
         output = ComputeCell([input_], lambda inputs: inputs[0] + 1)
@@ -38,7 +36,6 @@ class ReactTest(unittest.TestCase):
         input_.value = 3
         self.assertEqual(output.value, 4)
 
-    @pytest.mark.skip
     def test_compute_cells_can_depend_on_other_compute_cells(self):
         input_ = InputCell(1)
         times_two = ComputeCell([input_], lambda inputs: inputs[0] * 2)
@@ -51,7 +48,6 @@ class ReactTest(unittest.TestCase):
         input_.value = 3
         self.assertEqual(output.value, 96)
 
-    @pytest.mark.skip
     def test_compute_cells_fire_callbacks(self):
         input_ = InputCell(1)
         output = ComputeCell([input_], lambda inputs: inputs[0] + 1)
